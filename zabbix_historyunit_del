@@ -1,0 +1,38 @@
+#-*- coding: utf-8 -*-
+import MySQLdb as mysql
+import time
+from datetime import datetime
+from datetime import timedelta
+
+def prend_mxtime(predate):
+    expdate = predate
+    today = datetime.now()
+    preds = timedelta(days = expdate)
+    pred = today + preds
+    pd = pred.strftime('%Y-%m-%d')
+    uxtime = int(time.mktime(time.strptime(pd,'%Y-%m-%d')))
+    #print 'uxtime is ' , uxtime
+    return uxtime
+
+
+
+if __name__ == "__main__":
+    expd = -4
+    mt = prend_mxtime(expd)
+    print 'end of val: ', mt
+    print 'the begin time is : ',time.strftime('%Y-%m-%d %H:%M:%s',time.localtime())
+    conn = mysql.connect(host="10.10.103.215",user="del_zabbix",passwd="Mdel398Ma",db="zabbix",charset="utf8")
+    cursor= conn.cursor()
+    i = mt-20000
+    while i<=mt:
+        cursor.execute("""delete from history_uint where clock <= %s """ ,(i,))
+        print 'execute at clock : ',i
+        print 'this exetute time : ', time.strftime('%Y-%m-%d %H:%M:%s',time.localtime())
+        i = i + 1000
+        conn.commit()
+    print 'the end!',time.strftime('%Y-%m-%d %H:%M:%s',time.localtime())
+    conn.commit()
+    
+    cursor.execute("alter table history_uint engine=innodb;")
+    cursor.close()
+    conn.close()
