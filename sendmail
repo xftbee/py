@@ -1,0 +1,17 @@
+yum install sendmail mailx -y
+echo "this ia a test email" | mail -s "test mail" web_test@outlook.com
+
+mail -s "a file text" web_test@163.com </etc/passwd
+
+
+字符串对比
+#!/bin/sh
+
+conn=`redis-cli -h 10.20.22.22 info clients |grep connected_clients | cut -d: -f2`
+val=300
+if [ $conn \> "300" ];then
+echo "$?"
+echo "the redis connected clients lgt 300,now is:  $conn" |mail -s "redis connected clients" xufengtao@cheyipai.com,xufengtao@outlook.com,qizhicheng@cheyipai.com
+else
+echo "bbb xy"
+fi
